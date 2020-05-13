@@ -1,0 +1,1505 @@
+openapi: 3.0.0
+info:
+  description: Api Documentation
+  version: "1.0"
+  title: Api Documentation
+  termsOfService: urn:tos
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0
+tags:
+  - name: basic-error-controller
+    description: Basic Error Controller
+  - name: layerdefinition
+    description: Layers Rest Controller
+  - name: operation-handler
+    description: Operation Handler
+  - name: stack
+    description: Stack Rest Controller
+  - name: stackbuild
+    description: Stack Build Rest Controller
+  - name: test-auth
+    description: Auth Rest Controller
+  - name: web-mvc-endpoint-handler-mapping
+    description: Web Mvc Endpoint Handler Mapping
+paths:
+  /actuator:
+    get:
+      tags:
+        - web-mvc-endpoint-handler-mapping
+      summary: links
+      operationId: linksUsingGET
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  additionalProperties:
+                    $ref: "#/components/schemas/Link"
+            application/vnd.spring-boot.actuator.v2+json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  additionalProperties:
+                    $ref: "#/components/schemas/Link"
+      security:
+        - apiKey: []
+      deprecated: false
+  /actuator/health:
+    get:
+      tags:
+        - operation-handler
+      summary: handle
+      operationId: handleUsingGET
+      requestBody:
+        $ref: "#/components/requestBodies/handleUsingGETBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+            application/vnd.spring-boot.actuator.v2+json:
+              schema:
+                type: object
+      security:
+        - apiKey: []
+      deprecated: false
+  /actuator/info:
+    get:
+      tags:
+        - operation-handler
+      summary: handle
+      operationId: handleUsingGET_1
+      requestBody:
+        $ref: "#/components/requestBodies/handleUsingGETBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+            application/vnd.spring-boot.actuator.v2+json:
+              schema:
+                type: object
+      security:
+        - apiKey: []
+      deprecated: false
+  /error:
+    get:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingGET
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+      security:
+        - apiKey: []
+      deprecated: false
+    head:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingHEAD
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+      security:
+        - apiKey: []
+      deprecated: false
+    post:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingPOST
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+      security:
+        - apiKey: []
+      deprecated: false
+    put:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingPUT
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+      security:
+        - apiKey: []
+      deprecated: false
+    delete:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingDELETE
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+      security:
+        - apiKey: []
+      deprecated: false
+    options:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingOPTIONS
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+      security:
+        - apiKey: []
+      deprecated: false
+    patch:
+      tags:
+        - basic-error-controller
+      summary: errorHtml
+      operationId: errorHtmlUsingPATCH
+      responses:
+        "200":
+          description: OK
+          content:
+            text/html:
+              schema:
+                $ref: "#/components/schemas/ModelAndView"
+      security:
+        - apiKey: []
+      deprecated: false
+  /files:
+    post:
+      tags:
+        - layerdefinition
+      summary: Upload jars to s3
+      description: This method receives jars and uploads them to s3
+      operationId: uploadJarToS3UsingPOST
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: string
+                  format: binary
+              required:
+                - files
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: string
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Valid JAR file must be provided
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+  /layerdefinitions:
+    get:
+      tags:
+        - layerdefinition
+      summary: List all Layer Definitions
+      description: This endpoint allows clients to retrieve all Layer Definition optionally
+        indicating to get inactive ones and specifying offset and limits
+      operationId: listAllLayerDefinitions
+      parameters:
+        - name: active
+          in: query
+          description: active
+          required: false
+          schema:
+            type: boolean
+            default: true
+        - name: limit
+          in: query
+          description: limit
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 100
+        - name: offset
+          in: query
+          description: offset
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        "200":
+          description: LayerDefinitionVersion Collection
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/LayerDefinitionCollectionResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+    post:
+      tags:
+        - layerdefinition
+      summary: Add a Layer Definition
+      description: This method validates and adds a Layer Definition
+      operationId: createLayerDefinitionUsingPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Attribute"
+        description: layerDefinitionDto
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/LayerDefinitionResponse"
+        "400":
+          description: The provided body input is not a valid YAML object
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+  "/layerdefinitions/{idOrName}":
+    get:
+      tags:
+        - layerdefinition
+      summary: Get a Layer Definition Details
+      description: This endpoint allows clients to retrieve details for the Layer
+        Definition with the specified id
+      operationId: getLayerDefinitionDetails_1
+      parameters:
+        - name: idOrName
+          in: path
+          description: Layer Definition ID
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: query
+          description: version id to retrieve
+          required: false
+          allowEmptyValue: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A LayerDefinitionVersion
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/LayerDefinitionResponse"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: A Layer Definition with the specified id does not exist
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+    delete:
+      tags:
+        - layerdefinition
+      summary: Delete a Layer Definition Detail
+      description: This endpoint allows clients to delete the Layer
+        Definition with the specified id
+      operationId: deleteLayerDefinitionDetail
+      parameters:
+        - name: idOrName
+          in: path
+          description: Layer Definition ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+        "204":
+          description: A LayerDefinitionVersion
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: A Layer Definition with the specified id does not exist
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+    patch:
+      tags:
+        - layerdefinition
+      summary: Update a Layer Definition
+      description: Update the name, description, or definition of a Layer Definition
+      operationId: updateLayerDefinitionDetails
+      parameters:
+        - name: idOrName
+          in: path
+          description: id of the Layer Definition
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/PatchOperation_string_Array"
+      responses:
+        "200":
+          description: Layer Definition updated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/LayerDefinitionResponse"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Layer Definition not found
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Invalid or missing parameters
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+  "/layerdefinitions/{idOrName}/versions":
+    get:
+      tags:
+        - layerdefinition
+      summary: Get all Layer Definition Versions
+      description: This endpoint allows clients to retrieve versions for the Layer
+        Definition with the specified id
+      operationId: getLayerDefinitionVersions
+      parameters:
+        - name: idOrName
+          in: path
+          description: Layer Definition ID
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limit
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 100
+        - name: offset
+          in: query
+          description: offset
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        "200":
+          description: A LayerDefinitionVersion
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/LayerDefinitionCollectionResponse"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: A Layer Definition with the specified id does not exist
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+  /stackbuilds:
+    post:
+      tags:
+        - stackbuild
+      summary: Submits a stack build request
+      description: This method validates and adds a stack build request
+      operationId: createStackBuildRequestUsingPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StackBuildRequestDto"
+        description: requestDto
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/StackBuildRequest"
+        "201":
+          description: Stack Build Request is created
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/StackBuildRequest"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Request already exists
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Required fields should have values
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+  "/stackbuilds/{id}":
+    get:
+      tags:
+        - stackbuild
+      summary: Get the stack build request data
+      description: This endpoint allows clients to retrieve the data of a stack build
+        request with specified id
+      operationId: getStackBuildStatus
+      parameters:
+        - name: id
+          in: path
+          description: Stack build request ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A Stack build request
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/StackBuildRequest"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: A Stack build request with specified id does not exist
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+  "/stackbuilds/{id}/status":
+    get:
+      tags:
+        - stackbuild
+      summary: Get the status of a Stack build request
+      description: This endpoint allows clients to retrieve the status of a Stack build
+        request with specified id
+      operationId: getStackBuildStatus_1
+      parameters:
+        - name: id
+          in: path
+          description: Stack build request ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A StackBuildStatus
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/StackBuildStatus"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: A Stack build request with specified id does not exist
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+  "/stackbuilds/{id}/updates":
+    post:
+      tags:
+        - webhook
+        - stackbuild
+      summary: Send stack and layer build updates
+      description: Send stack and layer build updates
+      operationId: saveStackAndLayerUpdatesUsingPOST
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StackBuildStatusUpdateDto"
+        description: requestDto
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/StackBuildRequest"
+        "201":
+          description: Stack Build Request is created
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/StackBuildRequest"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Required fields should have values
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+  /stacks:
+    get:
+      tags:
+        - stack
+      summary: Retrieves a list of Stacks
+      description: Retrieves a list of Stacks
+      operationId: listAllStacksUsingGET
+      parameters:
+        - name: active
+          in: query
+          description: active
+          required: false
+          schema:
+            type: boolean
+            default: true
+        - name: limit
+          in: query
+          description: limit
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 100
+        - name: offset
+          in: query
+          description: offset
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        "200":
+          description: successful operation
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  type: object
+      security:
+        - apiKey: []
+      deprecated: false
+    post:
+      tags:
+        - stack
+      summary: Add a Stack Definition
+      description: This method validates and adds a Stack Definition
+      operationId: createStackUsingPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Attribute"
+        description: stackDto
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/StackVersion"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: The Stack definition provided is not a valid YAML
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+  "/stacks/{id}":
+    get:
+      tags:
+        - stack
+      summary: Retrieve a Stack
+      description: TRetrieve a Stack with the specified id
+      operationId: getStackDetailsUsingGET
+      parameters:
+        - name: id
+          in: path
+          description: id of the stack to retrieve
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: query
+          description: version id to retrieve
+          required: false
+          allowEmptyValue: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: A StackVersion
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/StackVersion"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Stack not found
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+    delete:
+      tags:
+        - stack
+      summary: Deactivate a Stack
+      description: Deactivate the Stack with the specified id
+      operationId: deactivateStackUsingDELETE
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  type: object
+        "204":
+          description: successful operation
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/StackVersion"
+        "401":
+          description: Unauthorized
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Stack not found
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+    patch:
+      tags:
+        - stack
+      summary: Update a Stack
+      description: Update the name, description, or definition of a Stack
+      operationId: updateStackUsingPATCH
+      parameters:
+        - name: id
+          in: path
+          description: id of the Stack
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/PatchOperation_string_Array"
+      responses:
+        "200":
+          description: Stack updated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/StackVersion"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Stack not found
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Invalid or missing parameters
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+  "/stacks/{id}/versions":
+    get:
+      tags:
+        - stack
+      summary: Get all Stack Versions
+      description: This endpoint allows clients to retrieve versions for the Stack with
+        specified id
+      operationId: getStackVersions
+      parameters:
+        - name: id
+          in: path
+          description: Stack ID
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: limit
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 100
+        - name: offset
+          in: query
+          description: offset
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        "200":
+          description: A StackVersion
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/StackVersion"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: A Stack with the specified id does not exist
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+  /test-auth:
+    get:
+      tags:
+        - test-auth
+      summary: Test Authentication
+      description: This method tests authentication
+      operationId: getTestAuthUsingGET
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: string
+        "400":
+          description: bad request
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      security:
+        - apiKey: []
+      deprecated: false
+#servers:
+#  - url: //auto-qa-dev-api-codegraph-eng.devfactory.com/
+components:
+  requestBodies:
+    PatchOperation_string_Array:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/PatchOperation_string_"
+      description: patchRequests
+      required: true
+    handleUsingGETBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+      description: body
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: Authorization
+      in: header
+  schemas:
+    Attribute:
+      type: object
+      required:
+        - definition
+        - name
+      properties:
+        definition:
+          type: string
+        description:
+          type: string
+        name:
+          type: string
+        layerCode:
+          type: string
+        neo4jProcedures:
+          type: string
+      title: Attribute
+    ExtendedAttribute:
+      allOf:
+        - $ref: "#/components/schemas/Attribute"
+        - type: object
+          properties:
+            id:
+              type: string
+            layerId:
+              type: string
+            version:
+              type: integer
+              format: int32
+            layerCodeEntryPoint:
+              type: string
+            active:
+              type: string
+            selfLink:
+              type: string
+            kind:
+              type: string
+            stackId:
+              type: string
+    ErrorResponse:
+      type: object
+      properties:
+        userMessage:
+          type: string
+        validation:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationItem"
+      title: ErrorResponse
+    LayerBuildStatus:
+      type: object
+      properties:
+        lastUpdate:
+          type: string
+        layerName:
+          type: string
+        layerVersionId:
+          type: string
+        status:
+          type: string
+        statusHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusHistory"
+      title: LayerBuildStatus
+    LayerBuildStatusUpdate:
+      type: object
+      properties:
+        lastUpdate:
+          type: string
+        layerVersionId:
+          type: string
+        status:
+          type: string
+        statusHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusUpdateHistory"
+      title: LayerBuildStatusUpdate
+    LayerDefinitionCollectionResponse:
+      type: object
+      properties:
+        contents:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExtendedAttribute"
+        kind:
+          type: string
+        selfLink:
+          type: string
+      title: LayerDefinitionCollectionResponse
+    LayerDefinitionResponse:
+      type: object
+      properties:
+        active:
+          type: boolean
+        definition:
+          type: string
+        description:
+          type: string
+        id:
+          type: string
+        kind:
+          type: string
+        layerCode:
+          type: string
+        layerCodeEntryPoint:
+          type: string
+        layerId:
+          type: string
+        name:
+          type: string
+        neo4jProcedures:
+          type: string
+        selfLink:
+          type: string
+        version:
+          type: integer
+          format: int32
+      title: LayerDefinitionResponse
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        templated:
+          type: boolean
+      title: Link
+    ModelAndView:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        model:
+          type: object
+        modelMap:
+          type: object
+          additionalProperties:
+            type: object
+        reference:
+          type: boolean
+        status:
+          type: string
+          enum:
+            - "100"
+            - "101"
+            - "102"
+            - "103"
+            - "200"
+            - "201"
+            - "202"
+            - "203"
+            - "204"
+            - "205"
+            - "206"
+            - "207"
+            - "208"
+            - "226"
+            - "300"
+            - "301"
+            - "302"
+            - "303"
+            - "304"
+            - "305"
+            - "307"
+            - "308"
+            - "400"
+            - "401"
+            - "402"
+            - "403"
+            - "404"
+            - "405"
+            - "406"
+            - "407"
+            - "408"
+            - "409"
+            - "410"
+            - "411"
+            - "412"
+            - "413"
+            - "414"
+            - "415"
+            - "416"
+            - "417"
+            - "418"
+            - "419"
+            - "420"
+            - "421"
+            - "422"
+            - "423"
+            - "424"
+            - "426"
+            - "428"
+            - "429"
+            - "431"
+            - "451"
+            - "500"
+            - "501"
+            - "502"
+            - "503"
+            - "504"
+            - "505"
+            - "506"
+            - "507"
+            - "508"
+            - "509"
+            - "510"
+            - "511"
+        view:
+          $ref: "#/components/schemas/View"
+        viewName:
+          type: string
+      title: ModelAndView
+    ResponseEntity:
+      type: object
+      properties:
+        body:
+          type: object
+        statusCode:
+          type: string
+          enum:
+            - "100"
+            - "101"
+            - "102"
+            - "103"
+            - "200"
+            - "201"
+            - "202"
+            - "203"
+            - "204"
+            - "205"
+            - "206"
+            - "207"
+            - "208"
+            - "226"
+            - "300"
+            - "301"
+            - "302"
+            - "303"
+            - "304"
+            - "305"
+            - "307"
+            - "308"
+            - "400"
+            - "401"
+            - "402"
+            - "403"
+            - "404"
+            - "405"
+            - "406"
+            - "407"
+            - "408"
+            - "409"
+            - "410"
+            - "411"
+            - "412"
+            - "413"
+            - "414"
+            - "415"
+            - "416"
+            - "417"
+            - "418"
+            - "419"
+            - "420"
+            - "421"
+            - "422"
+            - "423"
+            - "424"
+            - "426"
+            - "428"
+            - "429"
+            - "431"
+            - "451"
+            - "500"
+            - "501"
+            - "502"
+            - "503"
+            - "504"
+            - "505"
+            - "506"
+            - "507"
+            - "508"
+            - "509"
+            - "510"
+            - "511"
+        statusCodeValue:
+          type: integer
+          format: int32
+      title: ResponseEntity
+    Stack:
+      type: object
+      properties:
+        active:
+          type: boolean
+        createdDt:
+          type: string
+          format: date-time
+        description:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        updatedDt:
+          type: string
+          format: date-time
+      title: Stack
+    StackBuildRequest:
+      type: object
+      properties:
+        bucket:
+          type: string
+        completedDt:
+          type: string
+          format: date-time
+        createdDt:
+          type: string
+          format: date-time
+        dumpFile:
+          type: string
+        id:
+          type: string
+        keyName:
+          type: string
+        message:
+          type: string
+        processedDt:
+          type: string
+          format: date-time
+        repositoryUrl:
+          type: string
+        revision:
+          type: string
+        s3accessKey:
+          type: string
+        s3secretKey:
+          type: string
+        s3url:
+          type: string
+        stack:
+          $ref: "#/components/schemas/Stack"
+        status:
+          type: string
+        webhookUrl:
+          type: string
+      title: StackBuildRequest
+    StackBuildRequestDto:
+      type: object
+      required:
+        - bucket
+        - buildUpdatesWebhookUrl
+        - id
+        - key
+        - repositoryUrl
+        - revision
+        - s3AccessKey
+        - s3SecretKey
+        - s3Url
+        - stackId
+      properties:
+        bucket:
+          type: string
+        buildUpdatesWebhookUrl:
+          type: string
+        id:
+          type: string
+        key:
+          type: string
+        repositoryUrl:
+          type: string
+        revision:
+          type: string
+        s3AccessKey:
+          type: string
+        s3SecretKey:
+          type: string
+        s3Url:
+          type: string
+        stackId:
+          type: string
+      title: StackBuildRequestDto
+    StackBuildStatus:
+      type: object
+      properties:
+        kind:
+          type: string
+        lastUpdate:
+          type: string
+        layers:
+          type: array
+          items:
+            $ref: "#/components/schemas/LayerBuildStatus"
+        selfLink:
+          type: string
+        stackName:
+          type: string
+        stackVersionId:
+          type: string
+        status:
+          type: string
+        statusHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusHistory"
+        version:
+          type: integer
+          format: int32
+      title: StackBuildStatus
+    StackBuildStatusUpdateDto:
+      type: object
+      required:
+        - lastUpdate
+        - stackVersionId
+        - status
+        - statusHistory
+      properties:
+        dumpFile:
+          type: string
+        lastUpdate:
+          type: string
+        layerStatusUpdate:
+          type: array
+          items:
+            $ref: "#/components/schemas/LayerBuildStatusUpdate"
+        message:
+          type: string
+        stackVersionId:
+          type: string
+        status:
+          type: string
+        statusHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusUpdateHistory"
+      title: StackBuildStatusUpdateDto
+    StackVersion:
+      type: object
+      properties:
+        createdDt:
+          type: string
+          format: date-time
+        definition:
+          type: string
+        id:
+          type: string
+        stack:
+          $ref: "#/components/schemas/Stack"
+        updatedDt:
+          type: string
+          format: date-time
+        version:
+          type: integer
+          format: int32
+      title: StackVersion
+    StatusHistory:
+      type: object
+      properties:
+        date:
+          type: string
+        status:
+          type: string
+      title: StatusHistory
+    StatusUpdateHistory:
+      type: object
+      properties:
+        date:
+          type: string
+        state:
+          type: string
+      title: StatusUpdateHistory
+    ValidationItem:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+      title: ValidationItem
+    View:
+      type: object
+      properties:
+        contentType:
+          type: string
+      title: View
+    Map_string_Link_:
+      type: object
+      title: Map«string,Link»
+      additionalProperties:
+        $ref: "#/components/schemas/Link"
+    Optional_string_:
+      type: object
+      properties:
+        present:
+          type: boolean
+      title: Optional«string»
+    PatchOperation_string_:
+      type: object
+      properties:
+        from:
+          type: string
+        op:
+          type: string
+        operationType:
+          $ref: "#/components/schemas/Optional_string_"
+        path:
+          type: string
+        value:
+          type: string
+      title: PatchOperation«string»
+
